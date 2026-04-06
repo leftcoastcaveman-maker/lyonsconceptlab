@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ConceptLab — Beverage & Dessert Innovation Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+:root{--cream:#F5EFE0;--ink:#1A1208;--amber:#D4820A;--amber-light:#F0A832;--terra:#C4502A;--sage:#6B8C6E;--dust:#E8DBC8;--card:#FDFAF4;--border:rgba(26,18,8,0.12);--lyons:#1B4F8A;--lyons-l:#3A7BC8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;min-height:100vh}
+header{background:var(--ink);padding:22px 40px;display:flex;align-items:baseline;gap:16px;border-bottom:3px solid var(--amber);flex-wrap:wrap}
+header h1{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--amber-light);letter-spacing:2px;line-height:1}
+header p{color:rgba(245,239,224,0.55);font-size:0.82rem;font-weight:300}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 20px 80px}
+.panel{background:var(--card);border:1.5px solid var(--border);border-radius:4px;padding:32px;margin-bottom:28px;position:relative;overflow:hidden}
+.panel::before{content:'';position:absolute;top:0;left:0;width:5px;height:100%;background:linear-gradient(180deg,var(--amber),var(--terra))}
+.ptitle{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:1.5px;margin-bottom:3px;padding-left:14px}
+.psub{font-size:0.76rem;color:rgba(26,18,8,0.42);padding-left:14px;margin-bottom:22px}
+.slabel{font-size:0.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(26,18,8,0.35);margin-bottom:10px}
+.llabel{font-size:0.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--lyons);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.lbadge{background:var(--lyons);color:#fff;font-size:0.56rem;font-weight:700;letter-spacing:1.5px;padding:2px 7px;border-radius:2px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:0.67rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber)}
+.lfield label{color:var(--lyons-l)}
+.swrap{position:relative}
+.swrap::after{content:'▾';position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--amber);pointer-events:none;font-size:0.78rem}
+.lfield .swrap::after{color:var(--lyons)}
+select{width:100%;padding:9px 30px 9px 13px;background:var(--dust);border:1.5px solid transparent;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:0.86rem;color:var(--ink);appearance:none;-webkit-appearance:none;cursor:pointer;transition:border-color 0.18s}
+select:focus{outline:none;border-color:var(--amber)}
+.lfield select{background:#EEF4FB;border-color:rgba(27,79,138,0.15)}
+hr.div{border:none;border-top:1px dashed var(--border);margin:18px 0}
+.brow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:20px}
+.bgen{background:var(--amber);color:var(--ink);font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:2px;border:none;border-radius:3px;padding:12px 30px;cursor:pointer;transition:background 0.18s,transform 0.1s;display:flex;align-items:center;gap:8px}
+.bgen:hover{background:var(--amber-light)}.bgen:active{transform:scale(0.98)}.bgen:disabled{opacity:0.45;cursor:not-allowed;transform:none}
+.brnd{background:transparent;border:1.5px solid var(--ink);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:600;border-radius:3px;padding:12px 18px;cursor:pointer;transition:all 0.18s}
+.brnd:hover{background:var(--ink);color:var(--cream)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+.tag{font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:20px}
+.tf{background:var(--terra);color:#fff}.ti{background:var(--sage);color:#fff}.tl{background:var(--lyons);color:#fff}.to{background:var(--amber);color:var(--ink)}
+.errbox{background:#FEE;border:1.5px solid #C44;border-radius:4px;padding:16px 20px;font-size:0.85rem;color:#822;display:none;margin-bottom:18px;line-height:1.65}
+.errbox.v{display:block}
+.loadwrap{display:none;background:var(--card);border:1.5px solid var(--border);border-radius:4px;padding:52px 40px;text-align:center;margin-bottom:24px}
+.loadwrap.v{display:block}
+.spin{width:44px;height:44px;border:3px solid var(--dust);border-top-color:var(--amber);border-radius:50%;animation:sp 0.8s linear infinite;margin:0 auto 16px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.lmsg{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--ink);margin-bottom:6px}
+.lsub{font-size:0.77rem;color:rgba(26,18,8,0.4)}
+.out{display:none}.out.v{display:block;animation:fu 0.45s ease}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.clabel{font-size:0.67rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--terra);margin-bottom:5px}
+.cname{font-family:'DM Serif Display',serif;font-size:2.6rem;line-height:1.1;color:var(--ink);margin-bottom:22px}
+.cname em{font-style:italic;color:var(--amber)}
+.tcol{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start}
+.wps{display:flex;flex-direction:column;gap:18px}
+.wcard{background:var(--card);border:1.5px solid var(--border);border-radius:4px;padding:26px 30px;position:relative}
+.wnum{position:absolute;top:2px;right:16px;font-family:'Bebas Neue',sans-serif;font-size:4.8rem;color:rgba(26,18,8,0.05);line-height:1;user-select:none}
+.wtitle{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--terra);margin-bottom:12px}
+.wbody{font-size:0.9rem;line-height:1.78;color:rgba(26,18,8,0.82)}
+.revg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.rvm{background:var(--dust);border-radius:3px;padding:12px 14px}
+.rvv{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;color:var(--amber);line-height:1}
+.rvl{font-size:0.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(26,18,8,0.48);margin-top:3px}
+.rvbar{margin-top:12px;padding:13px 16px;background:var(--ink);border-radius:3px;color:var(--cream)}
+.rvbl{font-size:0.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber-light);margin-bottom:4px}
+.rvbv{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:1px}
+.icard{background:var(--card);border:1.5px solid var(--border);border-radius:4px;overflow:hidden;position:sticky;top:18px}
+.ihdr{background:var(--ink);padding:11px 16px;font-family:'Bebas Neue',sans-serif;font-size:0.85rem;letter-spacing:2px;color:var(--amber-light)}
+.iph{aspect-ratio:1/1.05;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:rgba(26,18,8,0.28);font-size:0.77rem}
+.icap{padding:12px 16px;font-size:0.75rem;color:rgba(26,18,8,0.48);border-top:1px solid var(--border);font-style:italic;line-height:1.5}
+.arow{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.bact{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;border:none;border-radius:3px;padding:9px 18px;cursor:pointer;transition:opacity 0.18s}
+.bact:hover{opacity:0.8}
+@media(max-width:820px){.g2,.g3{grid-template-columns:1fr}.tcol{grid-template-columns:1fr}.icard{position:static}header{padding:18px 20px}header h1{font-size:2.1rem}}
+</style>
+</head>
+<body>
+<header>
+  <h1>ConceptLab</h1>
+  <p>Beverage &amp; Dessert Innovation Engine — Powered by AI + Live Consumer Trend Data</p>
+</header>
+<div class="wrap">
+<div class="panel">
+  <div class="ptitle">Build Your Concept</div>
+  <div class="psub">Select options or leave on Random — hit Generate for a full AI-powered innovation white paper.</div>
+  <div class="slabel">Concept parameters</div>
+  <div class="g2">
+    <div class="field"><label>Format</label><div class="swrap"><select id="sf">
+      <option value="">— Random —</option>
+      <option>Shake</option><option>Refresher</option><option>Cold Brew</option><option>Hot Beverage</option><option>Mocktail</option><option>Lemonade / Limeade</option><option>Smoothie</option><option>Energy Drink</option><option>Milk Tea / Boba</option><option>Slushie / Frozen Drink</option><option>Sparkling Water</option><option>Agua Fresca</option><option>Horchata</option><option>Matcha Latte</option><option>Dirty Soda</option><option>Dessert</option><option>Parfait</option><option>Sundae</option><option>Baked Good</option><option>Frozen Yogurt</option>
+    </select></div></div>
+    <div class="field"><label>Key business outcome</label><div class="swrap"><select id="so">
+      <option value="">— Random —</option>
+      <option>Expand menu assortment</option><option>Attract Gen Z customers</option><option>Attract Millennial customers</option><option>Drive higher average check</option><option>Increase beverage category share</option><option>Create a seasonal LTO</option><option>Target health-conscious consumers</option><option>Build social media virality</option><option>Differentiate from competitors</option><option>Enter premium price tier</option><option>Add an afternoon daypart</option><option>Boost dessert attachment rate</option><option>Appeal to plant-based consumers</option><option>Capture the functional wellness trend</option><option>Drive repeat visit frequency</option><option>Build a signature hero item</option><option>Expand into Hispanic-influenced flavors</option><option>Target the $7+ beverage occasion</option>
+    </select></div></div>
+  </div>
+  <hr class="div"/>
+  <div class="slabel">Trending ingredients (select up to 3, or leave Random)</div>
+  <div class="g3">
+    <div class="field"><label>Trending ingredient 1</label><div class="swrap"><select id="si1">
+      <option value="">— Random —</option>
+      <optgroup label="Floral &amp; Botanical"><option>Lavender</option><option>Hibiscus</option><option>Rose Water</option><option>Elderflower</option><option>Butterfly Pea Flower</option><option>Chamomile</option><option>Jasmine</option></optgroup>
+      <optgroup label="Global &amp; Exotic"><option>Matcha</option><option>Yuzu</option><option>Ube</option><option>Pandan</option><option>Tamarind</option><option>Guava</option><option>Lychee</option><option>Taro</option></optgroup>
+      <optgroup label="Fruit Forward"><option>Strawberry</option><option>Mango</option><option>Passionfruit</option><option>Pineapple</option><option>Watermelon</option><option>Peach</option><option>Dragonfruit</option><option>Blackberry</option><option>Raspberry</option><option>Blueberry</option><option>Banana</option><option>Coconut</option><option>Blood Orange</option><option>Pomegranate</option><option>Açaí</option><option>Key Lime</option></optgroup>
+      <optgroup label="Warm &amp; Spiced"><option>Cinnamon</option><option>Pumpkin Spice</option><option>Brown Butter</option><option>Cardamom</option><option>Turmeric</option><option>Ginger</option><option>Espresso</option><option>Chai</option><option>Pistachio</option><option>Praline</option><option>English Toffee</option><option>Toasted Marshmallow</option></optgroup>
+      <optgroup label="Functional &amp; Wellness"><option>Blue Spirulina</option><option>Collagen</option><option>Adaptogens</option><option>Lion's Mane Mushroom</option><option>Chia Seeds</option><option>Raw Honey</option><option>Moringa</option><option>Sea Moss</option><option>Electrolytes</option></optgroup>
+    </select></div></div>
+    <div class="field"><label>Trending ingredient 2</label><div class="swrap"><select id="si2">
+      <option value="">— Random —</option>
+      <optgroup label="Dairy &amp; Alt-Dairy"><option>Oat Milk</option><option>Almond Milk</option><option>Coconut Cream</option><option>Cold Foam</option><option>Whipped Cream</option><option>Condensed Milk</option><option>Cream Cheese Foam</option><option>Brown Butter</option></optgroup>
+      <optgroup label="Sweeteners &amp; Sauces"><option>Salted Caramel</option><option>Dark Chocolate</option><option>White Chocolate</option><option>Vanilla Bean</option><option>Honey Syrup</option><option>Agave Nectar</option><option>Maple Syrup</option><option>Brown Sugar Syrup</option><option>Sea Salt</option><option>Caramel Sauce</option><option>Hot Fudge</option></optgroup>
+      <optgroup label="Texture &amp; Mix-ins"><option>Tapioca Pearls / Boba</option><option>Fruit Jelly Cubes</option><option>Mochi Pieces</option><option>Popping Boba</option><option>Chia Seeds</option><option>Aloe Vera</option><option>Graham Cracker Crumble</option><option>Toasted Coconut Flakes</option></optgroup>
+      <optgroup label="Coffee &amp; Tea"><option>Espresso Shot</option><option>Cold Brew Concentrate</option><option>Matcha Powder</option><option>Hojicha</option><option>Dirty Chai</option><option>London Fog (Earl Grey)</option><option>Chai Tea Concentrate</option></optgroup>
+      <optgroup label="Mixers &amp; Bases"><option>Lemonade Base</option><option>Limeade Base</option><option>Sparkling Water</option><option>Coconut Water</option><option>Cream Soda</option><option>Pina Colada Base</option></optgroup>
+    </select></div></div>
+    <div class="field"><label>Trending ingredient 3</label><div class="swrap"><select id="si3">
+      <option value="">— Random —</option>
+      <optgroup label="Garnish &amp; Finish"><option>Freeze-Dried Fruit</option><option>Edible Flowers</option><option>Toasted Coconut Flakes</option><option>Honey Drizzle</option><option>Flaky Sea Salt</option><option>Gold Luster Dust</option><option>Tajín Rim</option><option>Citrus Zest</option><option>Fresh Mint</option><option>Fresh Basil</option><option>Caramel Drizzle</option><option>Chocolate Drizzle</option></optgroup>
+      <optgroup label="Dessert-Inspired"><option>Peanut Butter</option><option>S'mores</option><option>Churro</option><option>Crème Brûlée</option><option>Tiramisu</option><option>Tres Leches</option><option>Toasted Marshmallow</option><option>English Toffee</option><option>Butterscotch</option><option>Mallo Creme</option><option>Peach Cobbler</option><option>Key Lime Pie</option><option>Apple Crisp</option></optgroup>
+      <optgroup label="Functional Add-ins"><option>Protein Powder</option><option>Collagen Peptides</option><option>Electrolytes</option><option>Prebiotic Fiber</option><option>MCT Oil</option></optgroup>
+      <optgroup label="Seasonal"><option>Pumpkin</option><option>Apple Cider</option><option>Peppermint</option><option>Gingerbread</option><option>Cranberry</option><option>Spiced Apple</option><option>Cinnamon Sugar Rim</option></optgroup>
+    </select></div></div>
+  </div>
+  <hr class="div"/>
+  <div class="llabel"><span class="lbadge">LYONS</span> Featured Lyons product (optional)</div>
+  <div class="g2">
+    <div class="field lfield"><label>Lyons item</label><div class="swrap"><select id="sl">
+      <option value="">— None —</option>
+      <optgroup label="Phillips Coffee House — Sauces &amp; Bases"><option>Sugar Free Chocolate Sauce</option><option>Chocolate Sauce</option><option>Caramel Sauce</option><option>White Chocolate Sauce</option><option>Frappe &amp; Smoothie Base</option><option>Chai Tea Concentrate</option><option>Pumpkin Spice Sauce</option></optgroup>
+      <optgroup label="Phillips Coffee House — Syrups"><option>Vanilla Syrup</option><option>Caramel Syrup</option><option>Hazelnut Syrup</option><option>Almond Syrup</option><option>Pecan Syrup</option><option>French Vanilla Syrup</option><option>Coconut Syrup</option><option>Chocolate Syrup</option><option>Irish Cream Syrup</option><option>Peppermint Syrup</option><option>Toasted Marshmallow Syrup</option><option>English Toffee Syrup</option><option>Lavender Syrup</option><option>Strawberry Syrup</option><option>Raspberry Syrup</option><option>Liquid Sugar Syrup</option><option>Salted Caramel Syrup - All Natural</option><option>Vanilla Syrup - All Natural</option><option>Sugar Free Almond Syrup</option><option>Sugar Free Hazelnut Syrup</option><option>Sugar Free Vanilla Syrup</option><option>Sugar Free Caramel Syrup</option></optgroup>
+      <optgroup label="Signature Sauces"><option>Sea Salt Caramel Sauce</option><option>Bourbon Caramel Sauce</option></optgroup>
+      <optgroup label="Maui Sauces"><option>Caramel Flavored Sauce (Maui)</option><option>White Chocolate Flavored Sauce (Maui)</option><option>Sweet Dark Chocolate Sauce (Maui)</option></optgroup>
+      <optgroup label="Premium Shake Syrups"><option>Banana Shake Syrup</option><option>Black Raspberry Shake Syrup</option><option>Liquid Malt Shake Syrup</option><option>Chocolate Shake Syrup</option><option>Vanilla Shake Syrup</option><option>Strawberry Shake Syrup</option><option>Wild Cherry Shake Syrup</option><option>Cappuccino Shake Syrup</option><option>Chocolate Shake Base</option></optgroup>
+      <optgroup label="Maui Specialty Refreshers"><option>Lemonade 3+1</option><option>Raspberry Dragonfruit Refresher</option><option>Mango Pineapple Citrus Refresher</option><option>Strawberry Watermelon Refresher</option><option>Blackberry Passionfruit Refresher</option><option>Mango Tangerine Caffeine-Free Refresher</option><option>Strawberry Dragonfruit Caffeine-Free Refresher</option></optgroup>
+      <optgroup label="Maui Pumpable Fruit"><option>Mango Pumpable Fruit</option><option>Blackberry Pumpable Fruit</option><option>Strawberry Pumpable Fruit</option><option>Blueberry Pumpable Fruit</option><option>Peach Pumpable Fruit</option></optgroup>
+      <optgroup label="Maui Fruit Blends"><option>Peach Fruit Blend</option><option>Strawberry Fruit Blend</option><option>Pina Colada Fruit Blend</option><option>Mango Fruit Blend</option><option>Strawberry Banana Fruit Blend</option><option>Wild Berry Acai Fruit Blend</option><option>Frozen Strawberry Blend</option><option>Frozen Peach Blend</option><option>Frozen Mango Blend</option></optgroup>
+      <optgroup label="Fudge &amp; Dessert Toppings"><option>Mellow Hot Fudge</option><option>Creamy Rich Fudge</option><option>Chocofudge Hot Fudge</option><option>Hot Caramel</option><option>Rich N' Creamy Hot Fudge</option><option>Old Fashioned Caramel Hot Fudge</option><option>Chocolate Shell Topping</option></optgroup>
+      <optgroup label="Sundae Toppings"><option>Caramel Sundae Topping</option><option>Peanut Butter Topping</option><option>Mallo Creme Topping</option><option>Crushed Blueberries Topping</option><option>Crushed Mt. Blackberries Topping</option><option>Butterscotch Topping</option><option>Sundae Bar Strawberry Topping</option><option>Crushed Peach Topping</option><option>Spiced Apple Topping</option><option>Crushed Wild Cherries Topping</option><option>Creme De Menthe Topping</option></optgroup>
+      <optgroup label="Designer Dessert Sauces"><option>Cinnamon Designer Sauce</option><option>Caramel Designer Sauce</option><option>Raspberry Designer Sauce</option><option>Chocolate Designer Sauce</option><option>Mango Designer Sauce</option><option>Kiwi Lime Designer Sauce</option><option>White Chocolate Designer Sauce</option><option>Strawberry Designer Sauce</option><option>Blackberry Designer Sauce</option><option>Mallo Creme Designer Sauce</option><option>Simple Caramel Designer Sauce</option></optgroup>
+      <optgroup label="Juice Bases &amp; Concentrates"><option>Century Orange Juice Base</option><option>Century Pineapple Juice Base</option><option>Century Cranberry Juice Base</option><option>Premium Frozen Lemonade 3+1</option><option>Premium Frozen Orange 3+1</option><option>Premium Frozen Limeade 5+1</option><option>Lemon Drink Base 5+1</option></optgroup>
+      <optgroup label="Bag-in-Box &amp; Hot Beverages"><option>Horchata BIB</option><option>Agua Fresca Melon BIB</option><option>Melon Cucumber Agua Fresca BIB</option><option>Mango Peach BIB</option><option>Sugar Free Lemonade BIB</option><option>Deluxe Hot Chocolate Drink Base</option><option>Thirs-Tea Unsweetened Tea Concentrate</option></optgroup>
+      <optgroup label="Enhanced Waters"><option>Ocean Spray Kiwi Strawberry Enhanced Water</option><option>Ocean Spray Tropical Mango Enhanced Water</option><option>Ocean Spray Peach Ginger Enhanced Water</option><option>Ocean Spray Cucumber Watermelon Enhanced Water</option><option>Aqua Plus Pomegranate Berry Water</option></optgroup>
+      <optgroup label="Fruit Fillings &amp; Preserves"><option>Apple Fruit Filling</option><option>Blueberry Fruit Filling</option><option>Cherry Fruit Filling</option><option>Peach Fruit Filling</option><option>Supreme Strawberry Glaze</option><option>Strawberry Preserve</option><option>Peach Preserve</option><option>Apricot Preserve</option></optgroup>
+      <optgroup label="Specialty"><option>Select Walnuts in Maple Sauce</option><option>Passion Fruit Cocktail</option><option>Mango Tropical Cocktail</option><option>Passion Orange Guava Juice</option></optgroup>
+    </select></div></div>
+    <div style="font-size:0.76rem;color:rgba(26,18,8,0.42);line-height:1.65;display:flex;align-items:center">When a Lyons product is selected, the AI features it by name in the recipe build and revenue model.</div>
+  </div>
+  <div class="brow">
+    <button class="bgen" id="bgen">⚡ Generate Concept</button>
+    <button class="brnd" id="brnd">🎲 Randomize All</button>
+  </div>
+  <div class="tags" id="tags" style="display:none"></div>
+</div>
+<div class="errbox" id="errbox"></div>
+<div class="loadwrap" id="loadwrap">
+  <div class="spin"></div>
+  <div class="lmsg" id="lmsg">Analyzing market trends…</div>
+  <div class="lsub">Researching consumer data, pricing benchmarks &amp; foodservice performance</div>
+</div>
+<div class="out" id="out">
+  <div class="clabel">Generated Concept</div>
+  <div class="cname" id="cname"></div>
+  <div class="tcol">
+    <div class="wps" id="wps"></div>
+    <div>
+      <div class="icard">
+        <div class="ihdr">Concept Visual</div>
+        <div class="iph" id="iph"><div style="font-size:2rem">🍹</div><div>Rendering…</div></div>
+        <svg id="csvg" style="display:none;width:100%" viewBox="0 0 300 320"></svg>
+        <div class="icap" id="icap"></div>
+      </div>
+      <div class="arow">
+        <button class="bact" id="bcopy">📋 Copy White Paper</button>
+        <button class="bact" onclick="window.print()">🖨 Print</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+const FORMATS=["Shake","Refresher","Cold Brew","Hot Beverage","Mocktail","Lemonade / Limeade","Smoothie","Energy Drink","Milk Tea / Boba","Slushie / Frozen Drink","Sparkling Water","Agua Fresca","Horchata","Matcha Latte","Dirty Soda","Dessert","Parfait","Sundae","Baked Good","Frozen Yogurt"];
+const I1=["Lavender","Hibiscus","Rose Water","Elderflower","Butterfly Pea Flower","Chamomile","Jasmine","Matcha","Yuzu","Ube","Pandan","Tamarind","Guava","Lychee","Taro","Strawberry","Mango","Passionfruit","Pineapple","Watermelon","Peach","Dragonfruit","Blackberry","Raspberry","Blueberry","Banana","Coconut","Blood Orange","Pomegranate","Açaí","Key Lime","Cinnamon","Pumpkin Spice","Brown Butter","Cardamom","Turmeric","Ginger","Espresso","Chai","Pistachio","Praline","English Toffee","Toasted Marshmallow","Blue Spirulina","Chia Seeds","Raw Honey","Moringa"];
+const I2=["Oat Milk","Almond Milk","Coconut Cream","Cold Foam","Whipped Cream","Condensed Milk","Cream Cheese Foam","Salted Caramel","Dark Chocolate","White Chocolate","Vanilla Bean","Honey Syrup","Maple Syrup","Brown Sugar Syrup","Sea Salt","Tapioca Pearls / Boba","Fruit Jelly Cubes","Mochi Pieces","Chia Seeds","Graham Cracker Crumble","Toasted Coconut Flakes","Espresso Shot","Cold Brew Concentrate","Matcha Powder","Chai Tea Concentrate","Lemonade Base","Sparkling Water","Cream Soda"];
+const I3=["Freeze-Dried Fruit","Edible Flowers","Toasted Coconut Flakes","Honey Drizzle","Flaky Sea Salt","Tajín Rim","Citrus Zest","Fresh Mint","Fresh Basil","Caramel Drizzle","Chocolate Drizzle","Peanut Butter","S'mores","Churro","Crème Brûlée","Tiramisu","Tres Leches","Toasted Marshmallow","Butterscotch","Peach Cobbler","Key Lime Pie","Protein Powder","Collagen Peptides","Pumpkin","Apple Cider","Peppermint","Gingerbread","Cranberry","Spiced Apple"];
+const OUTCOMES=["Expand menu assortment","Attract Gen Z customers","Attract Millennial customers","Drive higher average check","Increase beverage category share","Create a seasonal LTO","Target health-conscious consumers","Build social media virality","Differentiate from competitors","Enter premium price tier","Add an afternoon daypart","Boost dessert attachment rate","Appeal to plant-based consumers","Capture the functional wellness trend","Drive repeat visit frequency","Build a signature hero item","Expand into Hispanic-influenced flavors","Target the $7+ beverage occasion"];
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function setOpt(id,val){const s=document.getElementById(id);for(let o of s.options)if(o.value===val){s.value=val;return;}s.value='';}
+function getVal(id,arr){const v=document.getElementById(id).value;return v||pick(arr);}
+document.getElementById('brnd').addEventListener('click',()=>{
+  setOpt('sf',pick(FORMATS));setOpt('si1',pick(I1));setOpt('si2',pick(I2));setOpt('si3',pick(I3));setOpt('so',pick(OUTCOMES));
+  const lo=Array.from(document.getElementById('sl').options).filter(o=>o.value).map(o=>o.value);
+  document.getElementById('sl').value=Math.random()<0.3&&lo.length?pick(lo):'';
+});
+const LMSGS=["Analyzing market trends…","Researching consumer behavior…","Calculating revenue benchmarks…","Crafting white paper concept…","Almost there…"];
+let lt=null,li=0;
+function startLoad(){li=0;document.getElementById('lmsg').textContent=LMSGS[0];lt=setInterval(()=>{li=Math.min(li+1,LMSGS.length-1);document.getElementById('lmsg').textContent=LMSGS[li];},5000);}
+function stopLoad(){clearInterval(lt);}
+document.getElementById('bgen').addEventListener('click',generate);
+async function generate(){
+  const format=getVal('sf',FORMATS),i1=getVal('si1',I1),i2=getVal('si2',I2),i3=getVal('si3',I3);
+  const lyons=document.getElementById('sl').value||'',outcome=getVal('so',OUTCOMES);
+  const tags=document.getElementById('tags');
+  tags.style.display='flex';
+  tags.innerHTML=`<span class="tag tf">${format}</span><span class="tag ti">${i1}</span><span class="tag ti">${i2}</span><span class="tag ti">${i3}</span>${lyons?`<span class="tag tl">Lyons: ${lyons}</span>`:''}<span class="tag to">${outcome}</span>`;
+  document.getElementById('bgen').disabled=true;
+  document.getElementById('out').classList.remove('v');
+  document.getElementById('errbox').classList.remove('v');
+  document.getElementById('loadwrap').classList.add('v');
+  startLoad();
+  try{
+    const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({format,i1,i2,i3,lyons,outcome})});
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||'Server error '+res.status);}
+    const wp=await res.json();
+    render(wp,format,i1,i2);
+    document.getElementById('loadwrap').classList.remove('v');
+    document.getElementById('out').classList.add('v');
+    document.getElementById('out').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){
+    document.getElementById('loadwrap').classList.remove('v');
+    const eb=document.getElementById('errbox');eb.innerHTML='<strong>Error:</strong> '+e.message;eb.classList.add('v');
+  }finally{stopLoad();document.getElementById('bgen').disabled=false;}
+}
+function render(wp,format,i1,i2){
+  const parts=(wp.conceptName||'New Concept').split(' ');
+  document.getElementById('cname').innerHTML=parts.map((w,i)=>i===parts.length-1?`<em>${w}</em>`:w).join(' ');
+  document.getElementById('icap').textContent=wp.tagline||'';
+  const c=document.getElementById('wps');c.innerHTML='';
+  c.appendChild(mkCard('01',wp.visualTheme.title,`<p class="wbody">${wp.visualTheme.content}</p>`));
+  const bh=`<ol style="padding-left:18px;margin-bottom:10px">${(wp.build.steps||[]).map(s=>`<li style="margin-bottom:9px;font-size:0.9rem;line-height:1.7;color:rgba(26,18,8,0.82)">${s}</li>`).join('')}</ol><p style="font-size:0.8rem;font-style:italic;color:rgba(26,18,8,0.48);line-height:1.6">${wp.build.notes||''}</p>`;
+  c.appendChild(mkCard('02',wp.build.title,bh));
+  c.appendChild(mkCard('03',wp.whyItWorks.title,`<p class="wbody">${wp.whyItWorks.content}</p>`));
+  const rv=wp.revenueImpact||{};
+  const rh=`<div class="revg"><div class="rvm"><div class="rvv">${rv.suggestedRetailPrice||'—'}</div><div class="rvl">Suggested retail price</div></div><div class="rvm"><div class="rvv">${rv.cogPercent||'—'}</div><div class="rvl">Est. food cost %</div></div><div class="rvm"><div class="rvv">+${rv.checkImpactPercent||'—'}</div><div class="rvl">Avg check impact</div></div><div class="rvm"><div class="rvv">+${rv.beverageCategoryShareIncrease||'—'}</div><div class="rvl">Bev. category share</div></div></div><p class="wbody" style="margin-top:12px">${rv.content||''}</p><div class="rvbar"><div class="rvbl">Weekly → Annual Revenue Estimate</div><div class="rvbv">${rv.weeklyUnitsEstimate||'—'} units/wk → <span style="color:var(--amber-light)">${rv.annualRevenueEstimate||'—'}/yr</span></div></div>`;
+  c.appendChild(mkCard('04',rv.title||'Estimated Revenue Impact',rh));
+  drawSVG(format,i1,i2,wp.conceptName);
+}
+function mkCard(num,title,body){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<div class="wnum">${num}</div><div class="wtitle">${(title||'').toUpperCase()}</div>${body}`;return d;}
+function drawSVG(format,i1,i2,name){
+  const[c1,c2,c3]=getPalette(i1,i2);
+  const isDessert=['Dessert','Parfait','Sundae','Baked Good','Frozen Yogurt'].includes(format);
+  const isHot=['Hot Beverage','Matcha Latte'].includes(format);
+  const ty=isDessert?196:isHot?128:94;
+  let v='';
+  if(isDessert){v=`<ellipse cx="150" cy="204" rx="72" ry="19" fill="${c2}" opacity="0.22"/><path d="M78 204 Q78 280 150 287 Q222 280 222 204 Z" fill="${c1}" opacity="0.88"/><ellipse cx="150" cy="204" rx="72" ry="18" fill="${c1}" opacity="0.7"/><ellipse cx="150" cy="202" rx="68" ry="14" fill="${c1}" opacity="0.45"/>`;}
+  else if(isHot){v=`<rect x="96" y="138" width="108" height="128" rx="9" fill="${c1}" opacity="0.9"/><ellipse cx="150" cy="138" rx="54" ry="13" fill="${c1}"/><path d="M204 170 Q234 170 234 202 Q234 234 204 234" stroke="${c2}" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M132 122 Q128 108 132 96" stroke="${c1}" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.55"/><path d="M150 118 Q146 104 150 92" stroke="${c1}" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.55"/><path d="M168 122 Q164 108 168 96" stroke="${c1}" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.55"/>`;}
+  else{v=`<path d="M112 104 L99 268 Q99 284 150 284 Q201 284 201 268 L188 104 Z" fill="${c1}" opacity="0.9"/><ellipse cx="150" cy="104" rx="38" ry="10" fill="${c2}" opacity="0.88"/><ellipse cx="150" cy="96" rx="43" ry="11" fill="${c2}" opacity="0.95"/><rect x="145" y="72" width="10" height="24" rx="5" fill="${c2}"/><rect x="122" y="185" width="20" height="20" rx="4" fill="white" opacity="0.25" transform="rotate(-10 132 195)"/><rect x="148" y="196" rx="4" width="18" height="18" fill="white" opacity="0.2" transform="rotate(7 157 205)"/>`;}
+  const svg=document.getElementById('csvg');
+  svg.innerHTML=`<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${c3}"/><stop offset="100%" stop-color="#E8DBC8"/></linearGradient><linearGradient id="sh" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="white" stop-opacity="0.32"/><stop offset="50%" stop-color="white" stop-opacity="0.02"/></linearGradient></defs><rect width="300" height="320" fill="url(#bg)"/><circle cx="260" cy="45" r="75" fill="${c1}" opacity="0.07"/><circle cx="40" cy="285" r="55" fill="${c2}" opacity="0.08"/>${v}<rect width="300" height="320" fill="url(#sh)"/><circle cx="136" cy="${ty}" r="8" fill="white" opacity="0.82"/><circle cx="151" cy="${ty-6}" r="10" fill="white" opacity="0.9"/><circle cx="166" cy="${ty}" r="7" fill="white" opacity="0.78"/><circle cx="143" cy="${ty-2}" r="4" fill="${c1}" opacity="0.55"/><circle cx="158" cy="${ty-9}" r="3.5" fill="${c1}" opacity="0.48"/><text x="150" y="38" text-anchor="middle" font-family="Georgia,serif" font-size="10" fill="${c2}" opacity="0.5" font-style="italic">${i1} · ${i2}</text><text x="150" y="303" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="bold" fill="${c2}" letter-spacing="1">${(name||'').toUpperCase()}</text><text x="150" y="316" text-anchor="middle" font-family="Arial,sans-serif" font-size="8.5" fill="${c2}" opacity="0.42" letter-spacing="2">${format.toUpperCase()}</text>`;
+  document.getElementById('iph').style.display='none';svg.style.display='block';
+}
+function getPalette(i1,i2){
+  const m={'Matcha':['#78B84A','#2E5218','#F0F8E8'],'Lavender':['#9F7EC8','#6A4E9C','#F8F0FF'],'Hibiscus':['#D03060','#901A3A','#FFF0F5'],'Strawberry':['#E84060','#C02840','#FFF0F2'],'Mango':['#F5A820','#D47808','#FFF8E8'],'Coconut':['#D8C8A8','#907060','#FDFAF4'],'Ube':['#7840A0','#502878','#F5EEFF'],'Raspberry':['#C83060','#901040','#FFF0F5'],'Blueberry':['#3850A0','#203880','#EEF0FF'],'Blackberry':['#5030A0','#301878','#F0EEFF'],'Dragonfruit':['#E040A0','#B02070','#FFF0F8'],'Espresso':['#3C1808','#7A4828','#F5EFE0'],'Chai':['#B07030','#805020','#FFF8EE'],'Pumpkin Spice':['#D06020','#A04010','#FFF8F0'],'Pistachio':['#8AB870','#5A8040','#F0F8E8'],'Turmeric':['#E0A020','#B07810','#FFFAEE'],'Butterfly Pea Flower':['#4050C0','#202890','#EEF0FF'],'Blue Spirulina':['#2080C0','#105898','#EEF8FF'],'Passionfruit':['#E0A040','#C07010','#FFF8E8'],'Watermelon':['#E04060','#B02040','#FFF0F2'],'Blood Orange':['#D04020','#A02010','#FFF5F0'],'Guava':['#E080A0','#C05080','#FFF0F5'],'Lychee':['#F0D0C0','#C09080','#FFF8F5'],'Taro':['#A080B0','#706090','#F5F0FF'],'Yuzu':['#E0D040','#B0A010','#FFFFF0'],'Pandan':['#60B860','#308030','#F0FFF0'],'Peach':['#F0A060','#C07030','#FFF8F0'],'Pomegranate':['#C02040','#800020','#FFF0F2'],'Açaí':['#502870','#300850','#F0E8FF'],'Key Lime':['#A8D050','#688020','#F8FFEE'],'Cardamom':['#90A858','#607030','#F5F8E8'],'Ginger':['#E0A030','#B07010','#FFFAEE'],'Cinnamon':['#C06820','#904010','#FFF5EE'],'Elderflower':['#D8E8A8','#A0B860','#F8FFF0']};
+  for(const[k,v]of Object.entries(m)){if(i1.includes(k)||i2.includes(k))return v;}
+  return['#D4820A','#92550A','#F5EFE0'];
+}
+document.getElementById('bcopy').addEventListener('click',function(){
+  const el=document.getElementById('wps');if(!el)return;
+  navigator.clipboard.writeText(el.innerText).then(()=>{this.textContent='✅ Copied!';setTimeout(()=>this.textContent='📋 Copy White Paper',2500);});
+});
+</script>
+</body>
+</html>
