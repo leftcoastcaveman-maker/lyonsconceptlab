@@ -101,6 +101,7 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:18px 0}
   <div class="g3">
     <div class="field"><label>Trending ingredient 1</label><div class="swrap"><select id="si1">
       <option value="">— Random —</option>
+      <option value="none">— None —</option>
       <optgroup label="Floral &amp; Botanical"><option>Lavender</option><option>Hibiscus</option><option>Rose Water</option><option>Elderflower</option><option>Butterfly Pea Flower</option><option>Chamomile</option><option>Jasmine</option></optgroup>
       <optgroup label="Global &amp; Exotic"><option>Matcha</option><option>Yuzu</option><option>Ube</option><option>Pandan</option><option>Tamarind</option><option>Guava</option><option>Lychee</option><option>Taro</option></optgroup>
       <optgroup label="Fruit Forward"><option>Strawberry</option><option>Mango</option><option>Passionfruit</option><option>Pineapple</option><option>Watermelon</option><option>Peach</option><option>Dragonfruit</option><option>Blackberry</option><option>Raspberry</option><option>Blueberry</option><option>Banana</option><option>Coconut</option><option>Blood Orange</option><option>Pomegranate</option><option>Açaí</option><option>Key Lime</option></optgroup>
@@ -109,6 +110,7 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:18px 0}
     </select></div></div>
     <div class="field"><label>Trending ingredient 2</label><div class="swrap"><select id="si2">
       <option value="">— Random —</option>
+      <option value="none">— None —</option>
       <optgroup label="Dairy &amp; Alt-Dairy"><option>Oat Milk</option><option>Almond Milk</option><option>Coconut Cream</option><option>Cold Foam</option><option>Whipped Cream</option><option>Condensed Milk</option><option>Cream Cheese Foam</option><option>Brown Butter</option></optgroup>
       <optgroup label="Sweeteners &amp; Sauces"><option>Salted Caramel</option><option>Dark Chocolate</option><option>White Chocolate</option><option>Vanilla Bean</option><option>Honey Syrup</option><option>Agave Nectar</option><option>Maple Syrup</option><option>Brown Sugar Syrup</option><option>Sea Salt</option><option>Caramel Sauce</option><option>Hot Fudge</option></optgroup>
       <optgroup label="Texture &amp; Mix-ins"><option>Tapioca Pearls / Boba</option><option>Fruit Jelly Cubes</option><option>Mochi Pieces</option><option>Popping Boba</option><option>Chia Seeds</option><option>Aloe Vera</option><option>Graham Cracker Crumble</option><option>Toasted Coconut Flakes</option></optgroup>
@@ -117,6 +119,7 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:18px 0}
     </select></div></div>
     <div class="field"><label>Trending ingredient 3</label><div class="swrap"><select id="si3">
       <option value="">— Random —</option>
+      <option value="none">— None —</option>
       <optgroup label="Garnish &amp; Finish"><option>Freeze-Dried Fruit</option><option>Edible Flowers</option><option>Toasted Coconut Flakes</option><option>Honey Drizzle</option><option>Flaky Sea Salt</option><option>Gold Luster Dust</option><option>Tajín Rim</option><option>Citrus Zest</option><option>Fresh Mint</option><option>Fresh Basil</option><option>Caramel Drizzle</option><option>Chocolate Drizzle</option></optgroup>
       <optgroup label="Dessert-Inspired"><option>Peanut Butter</option><option>S'mores</option><option>Churro</option><option>Crème Brûlée</option><option>Tiramisu</option><option>Tres Leches</option><option>Toasted Marshmallow</option><option>English Toffee</option><option>Butterscotch</option><option>Mallo Creme</option><option>Peach Cobbler</option><option>Key Lime Pie</option><option>Apple Crisp</option></optgroup>
       <optgroup label="Functional Add-ins"><option>Protein Powder</option><option>Collagen Peptides</option><option>Electrolytes</option><option>Prebiotic Fiber</option><option>MCT Oil</option></optgroup>
@@ -167,7 +170,8 @@ hr.div{border:none;border-top:1px dashed var(--border);margin:18px 0}
     <div>
       <div class="icard">
         <div class="ihdr">Concept Visual</div>
-        <div class="iph" id="iph"><div style="font-size:2rem">🍹</div><div>Rendering…</div></div>
+        <div class="iph" id="iph"><div class="spin" style="width:32px;height:32px;margin:0 0 8px"></div><div>Generating image…</div></div>
+        <img id="cimg" style="display:none;width:100%;aspect-ratio:1/1;object-fit:cover;" alt="Concept image"/>
         <svg id="csvg" style="display:none;width:100%" viewBox="0 0 300 320"></svg>
         <div class="icap" id="icap"></div>
       </div>
@@ -187,10 +191,11 @@ const I3=["Freeze-Dried Fruit","Edible Flowers","Toasted Coconut Flakes","Honey 
 const OUTCOMES=["Expand menu assortment","Attract Gen Z customers","Attract Millennial customers","Drive higher average check","Increase beverage category share","Create a seasonal LTO","Target health-conscious consumers","Build social media virality","Differentiate from competitors","Enter premium price tier","Add an afternoon daypart","Boost dessert attachment rate","Appeal to plant-based consumers","Capture the functional wellness trend","Drive repeat visit frequency","Build a signature hero item","Expand into Hispanic-influenced flavors","Target the $7+ beverage occasion"];
 function pick(a){return a[Math.floor(Math.random()*a.length)];}
 function setOpt(id,val){const s=document.getElementById(id);for(let o of s.options)if(o.value===val){s.value=val;return;}s.value='';}
-function getVal(id,arr){const v=document.getElementById(id).value;return v||pick(arr);}
+function getVal(id,arr){const v=document.getElementById(id).value;if(v==='none')return '';return v||pick(arr);}
+function getIngredient(id,arr){const v=document.getElementById(id).value;if(v==='none')return '';if(v==='')return pick(arr);return v;}
 document.getElementById('brnd').addEventListener('click',()=>{
   setOpt('sf',pick(FORMATS));setOpt('si1',pick(I1));setOpt('si2',pick(I2));setOpt('si3',pick(I3));setOpt('so',pick(OUTCOMES));
-  const lo=Array.from(document.getElementById('sl').options).filter(o=>o.value).map(o=>o.value);
+  const lo=Array.from(document.getElementById('sl').options).filter(o=>o.value&&o.value!=='none').map(o=>o.value);
   document.getElementById('sl').value=Math.random()<0.3&&lo.length?pick(lo):'';
 });
 const LMSGS=["Analyzing market trends…","Researching consumer behavior…","Calculating revenue benchmarks…","Crafting white paper concept…","Almost there…"];
@@ -199,18 +204,18 @@ function startLoad(){li=0;document.getElementById('lmsg').textContent=LMSGS[0];l
 function stopLoad(){clearInterval(lt);}
 document.getElementById('bgen').addEventListener('click',generate);
 async function generate(){
-  const format=getVal('sf',FORMATS),i1=getVal('si1',I1),i2=getVal('si2',I2),i3=getVal('si3',I3);
+  const format=getVal('sf',FORMATS),i1=getIngredient('si1',I1),i2=getIngredient('si2',I2),i3=getIngredient('si3',I3);
   const lyons=document.getElementById('sl').value||'',outcome=getVal('so',OUTCOMES);
   const tags=document.getElementById('tags');
   tags.style.display='flex';
-  tags.innerHTML=`<span class="tag tf">${format}</span><span class="tag ti">${i1}</span><span class="tag ti">${i2}</span><span class="tag ti">${i3}</span>${lyons?`<span class="tag tl">Lyons: ${lyons}</span>`:''}<span class="tag to">${outcome}</span>`;
+  tags.innerHTML=`<span class="tag tf">${format}</span>${i1?`<span class="tag ti">${i1}</span>`:''}${i2?`<span class="tag ti">${i2}</span>`:''}${i3?`<span class="tag ti">${i3}</span>`:''}${lyons?`<span class="tag tl">Lyons: ${lyons}</span>`:''}<span class="tag to">${outcome}</span>`;
   document.getElementById('bgen').disabled=true;
   document.getElementById('out').classList.remove('v');
   document.getElementById('errbox').classList.remove('v');
   document.getElementById('loadwrap').classList.add('v');
   startLoad();
   try{
-    const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({format,i1,i2,i3,lyons,outcome})});
+    const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({format,i1:i1||'',i2:i2||'',i3:i3||'',lyons,outcome})});
     if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||'Server error '+res.status);}
     const wp=await res.json();
     render(wp,format,i1,i2);
@@ -234,7 +239,7 @@ function render(wp,format,i1,i2){
   const rv=wp.revenueImpact||{};
   const rh=`<div class="revg"><div class="rvm"><div class="rvv">${rv.suggestedRetailPrice||'—'}</div><div class="rvl">Suggested retail price</div></div><div class="rvm"><div class="rvv">${rv.cogPercent||'—'}</div><div class="rvl">Est. food cost %</div></div><div class="rvm"><div class="rvv">+${rv.checkImpactPercent||'—'}</div><div class="rvl">Avg check impact</div></div><div class="rvm"><div class="rvv">+${rv.beverageCategoryShareIncrease||'—'}</div><div class="rvl">Bev. category share</div></div></div><p class="wbody" style="margin-top:12px">${rv.content||''}</p><div class="rvbar"><div class="rvbl">Weekly → Annual Revenue Estimate</div><div class="rvbv">${rv.weeklyUnitsEstimate||'—'} units/wk → <span style="color:var(--amber-light)">${rv.annualRevenueEstimate||'—'}/yr</span></div></div>`;
   c.appendChild(mkCard('04',rv.title||'Estimated Revenue Impact',rh));
-  drawSVG(format,i1,i2,wp.conceptName);
+  if(wp.imageUrl){const img=document.getElementById("cimg");img.onload=function(){document.getElementById("iph").style.display="none";document.getElementById("csvg").style.display="none";img.style.display="block";};img.onerror=function(){drawSVG(format,i1,i2,wp.conceptName);};img.src=wp.imageUrl;}else{drawSVG(format,i1,i2,wp.conceptName);}
 }
 function mkCard(num,title,body){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<div class="wnum">${num}</div><div class="wtitle">${(title||'').toUpperCase()}</div>${body}`;return d;}
 function drawSVG(format,i1,i2,name){
