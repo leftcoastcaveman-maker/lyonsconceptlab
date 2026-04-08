@@ -222,6 +222,8 @@ async function generate(){
     document.getElementById('loadwrap').classList.remove('v');
     document.getElementById('out').classList.add('v');
     document.getElementById('out').scrollIntoView({behavior:'smooth',block:'start'});
+    // Fetch image separately so white paper shows immediately
+    if(wp.imagePrompt) generateImage(wp.imagePrompt, format, i1, i2, wp.conceptName);
   }catch(e){
     document.getElementById('loadwrap').classList.remove('v');
     const eb=document.getElementById('errbox');eb.innerHTML='<strong>Error:</strong> '+e.message;eb.classList.add('v');
@@ -239,7 +241,34 @@ function render(wp,format,i1,i2){
   const rv=wp.revenueImpact||{};
   const rh=`<div class="revg"><div class="rvm"><div class="rvv">${rv.suggestedRetailPrice||'—'}</div><div class="rvl">Suggested retail price</div></div><div class="rvm"><div class="rvv">${rv.cogPercent||'—'}</div><div class="rvl">Est. food cost %</div></div><div class="rvm"><div class="rvv">+${rv.checkImpactPercent||'—'}</div><div class="rvl">Avg check impact</div></div><div class="rvm"><div class="rvv">+${rv.beverageCategoryShareIncrease||'—'}</div><div class="rvl">Bev. category share</div></div></div><p class="wbody" style="margin-top:12px">${rv.content||''}</p><div class="rvbar"><div class="rvbl">Weekly → Annual Revenue Estimate</div><div class="rvbv">${rv.weeklyUnitsEstimate||'—'} units/wk → <span style="color:var(--amber-light)">${rv.annualRevenueEstimate||'—'}/yr</span></div></div>`;
   c.appendChild(mkCard('04',rv.title||'Estimated Revenue Impact',rh));
-  if(wp.imageUrl){const img=document.getElementById("cimg");img.onload=function(){document.getElementById("iph").style.display="none";document.getElementById("csvg").style.display="none";img.style.display="block";};img.onerror=function(){drawSVG(format,i1,i2,wp.conceptName);};img.src=wp.imageUrl;}else{drawSVG(format,i1,i2,wp.conceptName);}
+  // Always start with SVG illustration — real image loads separately via generateImage()
+  drawSVG(format,i1,i2,wp.conceptName);
+}
+async function generateImage(prompt, format, i1, i2, conceptName){
+  try{
+    // Show spinning placeholder while image loads
+    document.getElementById('iph').style.display='flex';
+    document.getElementById('csvg').style.display='none';
+    document.getElementById('cimg').style.display='none';
+    const res=await fetch('/api/image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+    if(!res.ok) throw new Error('Image API error');
+    const data=await res.json();
+    if(data.imageUrl){
+      const img=document.getElementById('cimg');
+      img.onload=function(){
+        document.getElementById('iph').style.display='none';
+        document.getElementById('csvg').style.display='none';
+        img.style.display='block';
+      };
+      img.onerror=function(){drawSVG(format,i1,i2,conceptName);};
+      img.src=data.imageUrl;
+    } else {
+      drawSVG(format,i1,i2,conceptName);
+    }
+  }catch(e){
+    // Silently fall back to SVG if image fails
+    drawSVG(format,i1,i2,conceptName);
+  }
 }
 function mkCard(num,title,body){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<div class="wnum">${num}</div><div class="wtitle">${(title||'').toUpperCase()}</div>${body}`;return d;}
 function drawSVG(format,i1,i2,name){
