@@ -276,7 +276,6 @@ async function generateImage(prompt, format, i1, i2, conceptName){
   }catch(e){
     iph.innerHTML='<div style="font-size:0.72rem;color:#C44;padding:12px;text-align:center">'+e.message+'</div>';
   }
-  }
 }
 function mkCard(num,title,body){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<div class="wnum">${num}</div><div class="wtitle">${(title||'').toUpperCase()}</div>${body}`;return d;}
 function drawSVG(format,i1,i2,name){
