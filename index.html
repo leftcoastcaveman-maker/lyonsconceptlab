@@ -245,29 +245,37 @@ function render(wp,format,i1,i2){
   drawSVG(format,i1,i2,wp.conceptName);
 }
 async function generateImage(prompt, format, i1, i2, conceptName){
+  // Show spinner in image box while generating
+  const iph=document.getElementById('iph');
+  iph.innerHTML='<div class="spin" style="width:32px;height:32px;margin:0 0 8px"></div><div style="font-size:0.75rem">Generating image…</div>';
+  iph.style.display='flex';
+  document.getElementById('csvg').style.display='none';
+  document.getElementById('cimg').style.display='none';
   try{
-    // Show spinning placeholder while image loads
-    document.getElementById('iph').style.display='flex';
-    document.getElementById('csvg').style.display='none';
-    document.getElementById('cimg').style.display='none';
     const res=await fetch('/api/image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
-    if(!res.ok) throw new Error('Image API error');
     const data=await res.json();
+    if(!res.ok){
+      // Show the actual error in the image box so we can debug
+      iph.innerHTML='<div style="font-size:0.72rem;color:#C44;padding:12px;text-align:center;line-height:1.5"><strong>Image error:</strong><br>'+( data.error||'Unknown')+( data.detail?'<br><span style="opacity:0.7">'+data.detail.slice(0,120)+'</span>':'')+'</div>';
+      return;
+    }
     if(data.imageUrl){
       const img=document.getElementById('cimg');
       img.onload=function(){
-        document.getElementById('iph').style.display='none';
+        iph.style.display='none';
         document.getElementById('csvg').style.display='none';
         img.style.display='block';
       };
-      img.onerror=function(){drawSVG(format,i1,i2,conceptName);};
+      img.onerror=function(){
+        iph.innerHTML='<div style="font-size:0.72rem;color:#C44;padding:12px;text-align:center">Image failed to load</div>';
+      };
       img.src=data.imageUrl;
     } else {
-      drawSVG(format,i1,i2,conceptName);
+      iph.innerHTML='<div style="font-size:0.72rem;color:#C44;padding:12px;text-align:center">'+( data.error||'No image returned')+'</div>';
     }
   }catch(e){
-    // Silently fall back to SVG if image fails
-    drawSVG(format,i1,i2,conceptName);
+    iph.innerHTML='<div style="font-size:0.72rem;color:#C44;padding:12px;text-align:center">'+e.message+'</div>';
+  }
   }
 }
 function mkCard(num,title,body){const d=document.createElement('div');d.className='wcard';d.innerHTML=`<div class="wnum">${num}</div><div class="wtitle">${(title||'').toUpperCase()}</div>${body}`;return d;}
