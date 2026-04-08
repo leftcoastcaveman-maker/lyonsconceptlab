@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   if (!prompt) return res.status(400).json({ error: 'No image prompt provided.' });
 
   try {
-    // Use fal.ai's synchronous run endpoint for fast response
+    // fal.ai REST API — correct endpoint and payload structure
     const falRes = await fetch('https://fal.run/fal-ai/flux/schnell', {
       method: 'POST',
       headers: {
@@ -25,19 +25,36 @@ export default async function handler(req, res) {
         num_inference_steps: 8,
         num_images: 1,
         enable_safety_checker: true,
+        sync_mode: true,
       })
     });
 
+    // Capture raw response text first so we can debug if needed
+    const rawText = await falRes.text();
+
     if (!falRes.ok) {
-      const e = await falRes.json().catch(() => ({}));
-      return res.status(falRes.status).json({ error: e.message || `fal.ai error ${falRes.status}` });
+      // Return the actual fal.ai error so we can see what went wrong
+      return res.status(falRes.status).json({
+        error: `fal.ai error ${falRes.status}`,
+        detail: rawText.slice(0, 500)
+      });
     }
 
-    const data = await falRes.json();
-    const imageUrl = data.images?.[0]?.url || null;
+    let data;
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      return res.status(500).json({ error: 'Could not parse fal.ai response', detail: rawText.slice(0, 300) });
+    }
+
+    // fal.ai returns images array
+    const imageUrl = data?.images?.[0]?.url || data?.image?.url || null;
 
     if (!imageUrl) {
-      return res.status(500).json({ error: 'No image returned from fal.ai. Please try again.' });
+      return res.status(500).json({
+        error: 'No image URL in fal.ai response',
+        detail: JSON.stringify(data).slice(0, 300)
+      });
     }
 
     return res.status(200).json({ imageUrl });
